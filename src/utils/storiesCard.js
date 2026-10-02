@@ -245,7 +245,7 @@ export async function renderStoriesCard({
   // Footer
   ctx.fillStyle = 'rgba(255,255,255,0.55)'
   ctx.font = '500 24px system-ui, sans-serif'
-  ctx.fillText('guilhermeromio-netto-prog.github.io/palmeiras-hub', W / 2, H - 80)
+  ctx.fillText('guilh-abc.github.io/palmeiras-hub', W / 2, H - 80)
   ctx.fillStyle = 'rgba(255,255,255,0.35)'
   ctx.font = '400 20px system-ui, sans-serif'
   ctx.fillText('Hub de torcedor · não oficial', W / 2, H - 40)

@@ -63,7 +63,7 @@ export function matchToVEvent(match) {
   const descParts = [
     match.competition || '',
     match.isHome != null ? (match.isHome ? 'Casa' : 'Fora') : '',
-    'Palmeiras Hub — https://guilhermeromio-netto-prog.github.io/palmeiras-hub/',
+    'Palmeiras Hub — https://guilh-abc.github.io/palmeiras-hub/',
   ].filter(Boolean)
 
   const lines = [

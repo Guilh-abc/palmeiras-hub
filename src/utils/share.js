@@ -1,5 +1,5 @@
 /** URL canônica do GitHub Pages */
-export const SITE_URL = 'https://guilhermeromio-netto-prog.github.io/palmeiras-hub/'
+export const SITE_URL = 'https://guilh-abc.github.io/palmeiras-hub/'
 
 export async function shareOrWhatsApp(text) {
   const payload = text.trim()

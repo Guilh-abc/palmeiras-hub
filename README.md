@@ -2,7 +2,7 @@
 
 App pessoal de torcedor do **Palmeiras**: próximo jogo, **onde assistir**, **ouvir no rádio**, **YouTube**, **placar ao vivo**, countdown, H2H, calendário, elenco, tabelas, notícias, e **torcida sincronizada** entre celulares (sala `VERDAO`).
 
-**Live:** https://guilhermeromio-netto-prog.github.io/palmeiras-hub/
+**Live:** https://guilh-abc.github.io/palmeiras-hub/
 
 ## Novidades v4.4.2 (Imersão Verdão 3D)
 
