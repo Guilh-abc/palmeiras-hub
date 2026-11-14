@@ -15,7 +15,6 @@ export function useHubData() {
     } catch (err) {
       if (err.name !== 'AbortError') {
         setError(err.message || 'Erro ao carregar dados')
-        setData(null)
       }
     } finally {
       setLoading(false)
