@@ -13,7 +13,8 @@
     "serve": "npx --yes serve dist -p 4173",
     "start": "NODE_ENV=production node server/index.js",
     "lint": "oxlint",
-    "test:datetime": "node scripts/assert-datetime.mjs"
+    "test:datetime": "node scripts/assert-datetime.mjs",
+    "test:review": "node scripts/assert-review.mjs"
   },
   "dependencies": {
     "@instantdb/react": "^1.0.67",
