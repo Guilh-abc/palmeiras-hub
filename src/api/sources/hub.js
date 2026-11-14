@@ -52,7 +52,7 @@ function formatTimeLabel(iso) {
 }
 
 
-function buildCopaDoBrasilPath(allMatches = [], upcoming = [], recent = []) {
+export function buildCopaDoBrasilPath(allMatches = [], upcoming = [], recent = []) {
   const pool = [...(allMatches || []), ...(upcoming || []), ...(recent || [])]
   const byId = new Map()
   for (const m of pool) {
@@ -70,7 +70,7 @@ function buildCopaDoBrasilPath(allMatches = [], upcoming = [], recent = []) {
   let phaseNote = 'Mata-mata — sem tabela de pontos.'
   if (nextLegs.length) {
     const opp = nextLegs[0].opponent || 'adversário'
-    phaseNote = `Semifinal vs ${opp} (ida e volta). Sem tabela de pontos.`
+    phaseNote = `Mata-mata vs ${opp}. Sem tabela de pontos.`
   } else if (lastFinished) {
     phaseNote = `Último jogo: vs ${lastFinished.opponent}. Sem tabela de pontos.`
   }

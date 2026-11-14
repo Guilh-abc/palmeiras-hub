@@ -9,34 +9,30 @@ const FEEDS = [
   {
     name: 'Gazeta Esportiva',
     rss: 'https://www.gazetaesportiva.com/times/palmeiras/feed/',
-    requirePalmeiras: false,
+    clubFeed: true,
   },
   {
     name: 'Google Notícias',
     rss: 'https://news.google.com/rss/search?q=Palmeiras+futebol&hl=pt-BR&gl=BR&ceid=BR:pt-419',
-    requirePalmeiras: false,
   },
   {
     name: 'ge.globo',
     // pox.globo responde melhor que ge.globo.com/rss (muitos proxies 400/422)
     rss: 'https://pox.globo.com/rss/ge/futebol/times/palmeiras/',
-    requirePalmeiras: false,
+    clubFeed: true,
   },
   {
     name: 'UOL Esporte',
     rss: 'https://rss.uol.com.br/feed/esporte.xml',
-    requirePalmeiras: true,
   },
   {
     name: 'CNN Brasil',
     rss: 'https://news.google.com/rss/search?q=Palmeiras+(site:cnnbrasil.com.br)&hl=pt-BR&gl=BR&ceid=BR:pt-419',
-    requirePalmeiras: false,
     labelAs: 'CNN Brasil',
   },
   {
     name: 'Lance!',
-    rss: 'https://news.google.com/rss/search?q=Palmeiras+(site:lance.com.br+OR+Lance)&hl=pt-BR&gl=BR&ceid=BR:pt-419',
-    requirePalmeiras: false,
+    rss: 'https://news.google.com/rss/search?q=Palmeiras+site:lance.com.br&hl=pt-BR&gl=BR&ceid=BR:pt-419',
     labelAs: 'Lance!',
   },
 ]
@@ -69,9 +65,12 @@ function normalizeTitle(title) {
     .slice(0, 120)
 }
 
-function mentionsPalmeiras(item) {
-  const blob = `${item.title || ''} ${item.description || ''} ${item.link || ''}`
-  return /palmeiras/i.test(blob)
+/** Feed do clube entra inteiro. Os outros só entram se o título cita Palmeiras. */
+export function keepNewsItem(feed, item) {
+  const title = String(item?.title || '')
+  if (!title.trim()) return false
+  if (feed?.clubFeed) return true
+  return /palmeiras/i.test(title)
 }
 
 function stripHtml(html) {
@@ -84,8 +83,7 @@ function stripHtml(html) {
 function mapItems(feed, items) {
   const sourceName = feed.labelAs || feed.name
   return (items || [])
-    .filter((item) => item?.title)
-    .filter((item) => (feed.requirePalmeiras ? mentionsPalmeiras(item) : true))
+    .filter((item) => keepNewsItem(feed, item))
     .slice(0, 16)
     .map((item) => ({
       id: idFrom(item.link || item.guid, item.title),
