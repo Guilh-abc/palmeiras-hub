@@ -4,14 +4,14 @@ import { tipShareText } from '../utils/share'
 import ShareButton from './ShareButton'
 import { matchTitle } from '../utils/format'
 import { matchDedupeKey } from '../utils/matchKey'
-import { db, id } from '../sync/instant'
+import { db, id, syncIsLive } from '../sync/instant'
 import { getClientId, getDisplayName, setDisplayName } from '../sync/identity'
 import { useRoomCodeState } from '../hooks/useRoomCode'
 
 /**
  * Palpites sincronizados na sala — cada aparelho/pessoa tem o seu.
  */
-export default function ScoreTip({ match, finalScore = null, finalStatus = null }) {
+function ScoreTipLive({ match, finalScore = null, finalStatus = null }) {
   const room = useRoomCodeState()
   const matchId = match ? matchDedupeKey(match) || String(match.id) || 'next' : 'next'
   const label = match ? matchTitle(match) : 'Próximo jogo'
@@ -193,4 +193,9 @@ export default function ScoreTip({ match, finalScore = null, finalStatus = null 
       )}
     </section>
   )
+}
+
+export default function ScoreTip(props) {
+  if (!syncIsLive()) return null
+  return <ScoreTipLive {...props} />
 }

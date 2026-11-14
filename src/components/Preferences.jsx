@@ -136,11 +136,20 @@ export default function Preferences({
           (prefers-reduced-motion). Overlay escuro mantém o texto legível.
         </p>
 
+        <label className="prefs-check">
+          <input
+            type="checkbox"
+            checked={prefs.entryGate !== false}
+            onChange={(e) => update({ entryGate: e.target.checked })}
+          />
+          <span>Portal “Avanti” uma vez por dia</span>
+        </label>
+
         <fieldset className="prefs-field prefs-home-blocks">
           <legend>Início — ordem e visibilidade</legend>
           <p className="muted tiny prefs-hint">
-            Use ↑ ↓ para reordenar e o olho para mostrar/ocultar. Padrão lean: dossiê + painel
-            cobrem clima, H2H e stats; rádio/YouTube ficam no dossiê.
+            Use ↑ ↓ para reordenar e o olho para mostrar/ocultar. Clima, rádio e YouTube
+            ficam na aba Jogos.
           </p>
           <ul className="prefs-blocks">
             {blocks.map((b, i) => (

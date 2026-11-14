@@ -2,14 +2,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { REACTION_EMOJIS, softHaptic } from '../utils/torcidaStorage'
 import { reactionShareText } from '../utils/share'
 import ShareButton from './ShareButton'
-import { db, id } from '../sync/instant'
+import { db, id, syncIsLive } from '../sync/instant'
 import { getClientId, getDisplayName } from '../sync/identity'
 import { useRoomCodeState } from '../hooks/useRoomCode'
 
 /**
  * Reações sincronizadas na sala da família (InstantDB).
  */
-export default function CrowdReactions({ matchId, matchLabel, compact = false }) {
+function CrowdReactionsLive({ matchId, matchLabel, compact = false }) {
   const room = useRoomCodeState()
   const matchKey = String(matchId || 'geral')
   const [nick, setNick] = useState(() => getDisplayName())
@@ -110,4 +110,9 @@ export default function CrowdReactions({ matchId, matchLabel, compact = false })
       </div>
     </section>
   )
+}
+
+export default function CrowdReactions(props) {
+  if (!syncIsLive()) return null
+  return <CrowdReactionsLive {...props} />
 }

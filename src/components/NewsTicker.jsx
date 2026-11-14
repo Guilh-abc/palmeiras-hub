@@ -29,7 +29,9 @@ export default function NewsTicker({ news = [] }) {
           className="news-ticker__track"
           style={{ animationDuration: `${durationSec}s` }}
         >
-          {loop.map((n, i) => (
+          {loop.map((n, i) => {
+            const copy = i >= items.length
+            return (
             <a
               key={`${n.id}-${i}`}
               href={n.url}
@@ -37,6 +39,8 @@ export default function NewsTicker({ news = [] }) {
               rel="noopener noreferrer"
               className="news-ticker__item"
               title={n.title}
+              aria-hidden={copy || undefined}
+              tabIndex={copy ? -1 : undefined}
             >
               <span className="news-ticker__src">{n.source}</span>
               <span className="news-ticker__headline">{truncateTitle(n.title)}</span>
@@ -44,7 +48,8 @@ export default function NewsTicker({ news = [] }) {
                 <span className="news-ticker__time">{formatRelative(n.publishedAt)}</span>
               )}
             </a>
-          ))}
+            )
+          })}
         </div>
       </div>
     </div>

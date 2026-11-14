@@ -3,11 +3,11 @@ import { QUIZ_QUESTIONS, QUIZ_TOTAL } from '../utils/quizVerdao'
 import { getQuizBest, saveQuizBest, softHaptic } from '../utils/torcidaStorage'
 import { quizShareText } from '../utils/share'
 import ShareButton from './ShareButton'
-import { db, id } from '../sync/instant'
+import { db, id, syncIsLive } from '../sync/instant'
 import { getDisplayName, setDisplayName } from '../sync/identity'
 import { useRoomCodeState } from '../hooks/useRoomCode'
 
-export default function QuizVerdao({ embedded = false }) {
+function QuizVerdaoLive({ embedded = false }) {
   const room = useRoomCodeState()
   const { data } = db.useQuery({
     quizScores: {
@@ -180,4 +180,9 @@ export default function QuizVerdao({ embedded = false }) {
       )}
     </section>
   )
+}
+
+export default function QuizVerdao(props) {
+  if (!syncIsLive()) return null
+  return <QuizVerdaoLive {...props} />
 }

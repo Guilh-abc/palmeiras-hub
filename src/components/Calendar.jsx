@@ -3,6 +3,10 @@ import { formatDateTime, scoreLine } from '../utils/format'
 import { matchDedupeKey } from '../utils/matchKey'
 import { MatchTeams } from './TeamLogo'
 import AddToCalendar from './AddToCalendar'
+import MatchWeather from './MatchWeather'
+import BroadcastInfo from './BroadcastInfo'
+import RadioListen from './RadioListen'
+import YouTubeMatch from './YouTubeMatch'
 
 const COMP_FILTERS = [
   { id: 'all', label: 'Todas' },
@@ -61,9 +65,22 @@ function passesFilters(m, competition, venue) {
   return m.competitionCode === competition
 }
 
+function midiaWasRequested() {
+  try {
+    if (sessionStorage.getItem('palmeiras-open-midia') === '1') {
+      sessionStorage.removeItem('palmeiras-open-midia')
+      return true
+    }
+  } catch {
+    /* private mode */
+  }
+  return false
+}
+
 export default function Calendar({ data, onViewChange }) {
   const [competition, setCompetition] = useState('all')
   const [venue, setVenue] = useState('all')
+  const [midiaOpen, setMidiaOpen] = useState(midiaWasRequested)
 
   const changeCompetition = (id) => {
     setCompetition(id)
@@ -89,6 +106,20 @@ export default function Calendar({ data, onViewChange }) {
       <p className="lede">
         Brasileirão, Libertadores, Paulistão e Copa do Brasil — próximos e recentes.
       </p>
+      {(data.nextMatch || (data.upcoming || [])[0]) && (
+        <details
+          id="jogo-midia"
+          className="card jogo-midia"
+          open={midiaOpen}
+          onToggle={(e) => setMidiaOpen(e.currentTarget.open)}
+        >
+          <summary>Clima, onde assistir, rádio e YouTube</summary>
+          <MatchWeather match={data.nextMatch || data.upcoming[0]} />
+          <BroadcastInfo match={data.nextMatch || data.upcoming[0]} />
+          <RadioListen />
+          <YouTubeMatch match={data.nextMatch || data.upcoming[0]} />
+        </details>
+      )}
       <AddToCalendar
         match={(data.upcoming || [])[0] || data.nextMatch}
         upcoming={data.upcoming || []}

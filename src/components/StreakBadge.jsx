@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getClientId, getDisplayName } from '../sync/identity'
-import { db, id } from '../sync/instant'
+import { db, id, syncIsLive } from '../sync/instant'
 import { useRoomCodeState } from '../hooks/useRoomCode'
 import {
   readStreak,
@@ -28,7 +28,7 @@ export default function StreakBadge({ compact = false }) {
     ;(async () => {
       try {
         const today = dateKeySP(new Date())
-        if (!today || !result.isNewDay) {
+        if (!today || !result.isNewDay || !syncIsLive()) {
           if (!cancelled) setSynced(false)
           return
         }

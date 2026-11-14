@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { getRoomCode } from '../sync/identity'
 import { useRoomCodeState } from '../hooks/useRoomCode'
 import { roomInviteText, shareOrWhatsApp } from '../utils/share'
+import { syncIsLive } from '../sync/instant'
 
 /**
  * Convite one-tap da sala VERDAO — copia / compartilha link + código.
@@ -48,7 +49,9 @@ export default function RoomInvite() {
       </div>
 
       <p className="muted tiny room-invite__hint">
-        Mesmo link + mesmo código = mural, palpites e reações juntos.
+        {syncIsLive()
+          ? 'Mesmo link + mesmo código = mural, palpites e reações juntos.'
+          : 'O convite continua válido. Mural e palpites entre celulares voltam quando o sync for religado.'}
       </p>
 
       <div className="room-invite__actions">

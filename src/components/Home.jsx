@@ -3,12 +3,10 @@ import Countdown from './Countdown'
 import H2H from './H2H'
 import ShareButton from './ShareButton'
 import LiveMatchCenter from './LiveMatchCenter'
-import ScoreTip from './ScoreTip'
 import BroadcastInfo from './BroadcastInfo'
 import RadioListen from './RadioListen'
 import YouTubeMatch from './YouTubeMatch'
 import MatchWeather from './MatchWeather'
-import SyncStatus from './SyncStatus'
 import StoriesCard from './StoriesCard'
 import StreakBadge from './StreakBadge'
 import MatchDossier from './MatchDossier'
@@ -27,19 +25,6 @@ import { DEFAULT_HOME_BLOCKS } from '../utils/preferences'
 const BASE = import.meta.env.BASE_URL
 const CREST = `${BASE}palmeiras-crest.svg`
 const HERO = `${BASE}brand/hero-campeao.png`
-
-function scrollToId(id) {
-  const el = document.getElementById(id)
-  if (!el) return false
-  try {
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    el.classList.add('quick-focus')
-    window.setTimeout(() => el.classList.remove('quick-focus'), 1400)
-  } catch {
-    el.scrollIntoView()
-  }
-  return true
-}
 
 function canShowWeather(match) {
   if (!match) return false
@@ -66,6 +51,7 @@ export default function Home({
   favoriteIds = [],
   homeBlocks = DEFAULT_HOME_BLOCKS,
   onOpenTorcida,
+  onOpenJogos,
 }) {
   void favoriteIds // favoritos ficam na aba Time — Home lean
 
@@ -95,19 +81,12 @@ export default function Home({
     liveMatch?.candidate?.status === 'LIVE' ||
     liveMatch?.candidate?.status === 'FINISHED'
 
-  const finalScore =
-    liveMatch?.live?.score ||
-    (liveMatch?.candidate?.status === 'FINISHED' ? liveMatch?.candidate?.score : null)
-  const finalStatus = liveMatch?.live?.status || liveMatch?.candidate?.status || displayMatch?.status
-
   const blocks = Array.isArray(homeBlocks) && homeBlocks.length
     ? homeBlocks
     : DEFAULT_HOME_BLOCKS
 
   const dossierOn = isBlockOn(blocks, 'nextMatch')
   const seasonOn = isBlockOn(blocks, 'seasonPanel')
-  const radioOn = isBlockOn(blocks, 'radio')
-  const youtubeOn = isBlockOn(blocks, 'youtube')
 
   const renderBlock = (id) => {
     switch (id) {
@@ -127,16 +106,11 @@ export default function Home({
               data={data}
               upcoming={upcoming}
               form={data.form}
-              includeMedia={!radioOn && !youtubeOn}
+              lean
+              includeMedia={false}
             />
             {displayMatch && (
               <div className="home-dossier-tools">
-                <SyncStatus compact />
-                <ScoreTip
-                  match={displayMatch}
-                  finalScore={finalScore}
-                  finalStatus={finalStatus}
-                />
                 <div className="share-row">
                   <ShareButton text={shareNext} label="WhatsApp · próximo jogo" />
                 </div>
@@ -318,8 +292,23 @@ export default function Home({
     }
   }
 
+  const ordered = blocks.filter((b) => b.visible !== false)
+  const leadBlocks = ordered.filter((b) => b.id === 'nextMatch')
+  const tailBlocks = ordered.filter((b) => b.id !== 'nextMatch')
+
   return (
     <section className="page home home--lean">
+      {showLive && (
+        <LiveMatchCenter
+          candidate={liveMatch.candidate}
+          live={liveMatch.live}
+          error={liveMatch.error}
+          polling={liveMatch.polling}
+        />
+      )}
+
+      {leadBlocks.map((b) => renderBlock(b.id))}
+
       <div className="hero-campeao hero-campeao--compact">
         <img
           className="hero-campeao__img"
@@ -361,35 +350,20 @@ export default function Home({
         </div>
       </div>
 
-      {showLive && (
-        <LiveMatchCenter
-          candidate={liveMatch.candidate}
-          live={liveMatch.live}
-          error={liveMatch.error}
-          polling={liveMatch.polling}
-        />
-      )}
-
-      {blocks.filter((b) => b.visible !== false).map((b) => renderBlock(b.id))}
+      {tailBlocks.map((b) => renderBlock(b.id))}
 
       <nav className="home-quick" aria-label="Ações rápidas">
         <button
           type="button"
           className="home-quick__btn touch"
-          onClick={() => {
-            if (!scrollToId('home-radio') && !scrollToId('dossier-media')) {
-              scrollToId('home-next-match')
-            }
-          }}
+          onClick={() => onOpenJogos?.('midia')}
         >
           <span aria-hidden="true">📻</span> Ouvir rádio
         </button>
         <button
           type="button"
           className="home-quick__btn touch"
-          onClick={() => {
-            if (!scrollToId('home-broadcast')) scrollToId('home-next-match')
-          }}
+          onClick={() => onOpenJogos?.('midia')}
         >
           <span aria-hidden="true">📺</span> Onde assistir
         </button>

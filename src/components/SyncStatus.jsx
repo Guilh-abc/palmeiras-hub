@@ -5,7 +5,9 @@ import {
   isInstantExpired,
   isInstantExpiringSoon,
   INSTANT_EXPIRES_ISO,
+  syncIsLive,
 } from '../sync/instant'
+import SyncPaused from '../sync/SyncPaused'
 import {
   getDisplayName,
   getRoomCode,
@@ -39,7 +41,7 @@ function notifyDisplayName(n) {
 /**
  * Status da sala + edição do código (padrão VERDAO) e apelido na torcida.
  */
-export default function SyncStatus({ compact = false }) {
+function SyncStatusLive({ compact = false }) {
   const conn = db.useConnectionStatus()
   const [room, setRoom] = useState(() => getRoomCode())
   const [name, setName] = useState(() => getDisplayName())
@@ -206,4 +208,9 @@ export default function SyncStatus({ compact = false }) {
       )}
     </section>
   )
+}
+
+export default function SyncStatus(props) {
+  if (!syncIsLive()) return <SyncPaused />
+  return <SyncStatusLive {...props} />
 }

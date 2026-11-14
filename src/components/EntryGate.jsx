@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   markEntryGateSeen,
   prefersReducedMotion,
@@ -14,9 +14,10 @@ const AUTO_MS = 2500
 /**
  * Portal cinematográfico — 1× por dia (SP). Não bloqueia navegações depois.
  */
-export default function EntryGate() {
-  const [open, setOpen] = useState(() => shouldShowEntryGate())
+export default function EntryGate({ enabled = true }) {
+  const [open, setOpen] = useState(() => enabled && shouldShowEntryGate())
   const [leaving, setLeaving] = useState(false)
+  const dialogRef = useRef(null)
 
   const dismiss = useCallback(() => {
     if (leaving) return
@@ -33,10 +34,26 @@ export default function EntryGate() {
     return () => window.clearTimeout(t)
   }, [open, dismiss])
 
+  useEffect(() => {
+    if (!open) return undefined
+    const root = dialogRef.current
+    const focusTarget = root?.querySelector('.entry-gate__cta')
+    focusTarget?.focus()
+    const onKey = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        dismiss()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open, dismiss])
+
   if (!open) return null
 
   return (
     <div
+      ref={dialogRef}
       className={`entry-gate${leaving ? ' entry-gate--out' : ''}${prefersReducedMotion() ? ' entry-gate--static' : ''}`}
       role="dialog"
       aria-modal="true"

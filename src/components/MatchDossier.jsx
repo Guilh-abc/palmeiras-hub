@@ -36,6 +36,7 @@ export default function MatchDossier({
   upcoming = [],
   form,
   includeMedia = false,
+  lean = false,
 }) {
   if (!match) {
     return (
@@ -134,15 +135,17 @@ export default function MatchDossier({
         </section>
       )}
 
-      {canShowWeather(match) && (
+      {!lean && canShowWeather(match) && (
         <section className="dossier__section dossier__section--weather">
           <MatchWeather match={match} />
         </section>
       )}
 
-      <section className="dossier__section dossier__section--broadcast">
-        <BroadcastInfo match={match} />
-      </section>
+      {!lean && (
+        <section className="dossier__section dossier__section--broadcast">
+          <BroadcastInfo match={match} />
+        </section>
+      )}
 
       <section className="dossier__section">
         <h4 className="dossier__section-title">Desfalques e suspensões</h4>
@@ -226,7 +229,7 @@ export default function MatchDossier({
         )}
       </section>
 
-      {includeMedia && (
+      {includeMedia && !lean && (
         <details id="dossier-media" className="dossier__section dossier__media">
           <summary className="dossier__section-title dossier__media-summary">
             Rádio · YouTube

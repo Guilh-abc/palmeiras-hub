@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { MAX_MSG, MAX_NAME } from '../utils/torcidaStorage'
 import { muralInviteText } from '../utils/share'
 import ShareButton from './ShareButton'
-import { db, id } from '../sync/instant'
+import { db, id, syncIsLive } from '../sync/instant'
 import { getDisplayName, setDisplayName } from '../sync/identity'
 import { useRoomCodeState } from '../hooks/useRoomCode'
 
@@ -22,7 +22,7 @@ function formatWhen(ts) {
   }
 }
 
-export default function CrowdWall() {
+function CrowdWallLive() {
   const room = useRoomCodeState()
   const { data, isLoading } = db.useQuery({
     mural: {
@@ -121,4 +121,9 @@ export default function CrowdWall() {
       </ul>
     </section>
   )
+}
+
+export default function CrowdWall() {
+  if (!syncIsLive()) return null
+  return <CrowdWallLive />
 }
