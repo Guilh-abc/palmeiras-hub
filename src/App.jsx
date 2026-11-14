@@ -176,7 +176,7 @@ export default function App() {
       <PitchBackground videoEnabled={prefs.videoBg !== false} />
       <PitchParticles />
       <ConfettiBurst active={confetti} onDone={onConfettiDone} />
-      <EntryGate />
+      <EntryGate enabled={prefs.entryGate !== false} />
 
       <header className="topbar topbar--glass">
         <div className="brand">
@@ -231,6 +231,11 @@ export default function App() {
                 Atualizando fontes públicas…
               </p>
             )}
+            {error && !loading && (
+              <p className="muted pad-refresh" role="alert">
+                Não atualizei agora: {error}. Os dados anteriores continuam na tela.
+              </p>
+            )}
             {tab === 'home' && (
               <Home
                 data={data}
@@ -240,6 +245,16 @@ export default function App() {
                 favoriteIds={prefs.favoritePlayerIds}
                 homeBlocks={prefs.homeBlocks}
                 onOpenTorcida={() => selectTab('torcida')}
+                onOpenJogos={(section) => {
+                  if (section === 'midia') {
+                    try {
+                      sessionStorage.setItem('palmeiras-open-midia', '1')
+                    } catch {
+                      /* private mode */
+                    }
+                  }
+                  selectTab('calendar')
+                }}
               />
             )}
             {tab === 'calendar' && <Calendar data={data} onViewChange={scrollAppToTop} />}
