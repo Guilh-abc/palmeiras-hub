@@ -7,10 +7,13 @@
  * VITE_INSTANT_APP_ID no build (ver README / scripts/setup-instant.md).
  */
 import { init, i, id, tx, lookup } from '@instantdb/react'
+import {
+  DEFAULT_INSTANT_APP_ID,
+  INSTANT_EXPIRES_ISO,
+  isInstantExpiredAt,
+} from './instantExpiry.js'
 
-/** Default Instant app for family room VERDAO (temporary until ~2026-10-01). */
-export const DEFAULT_INSTANT_APP_ID = '5b938cde-137c-4fbf-9866-982c2071d4aa'
-export const INSTANT_EXPIRES_ISO = '2026-10-01T00:12:37.343Z'
+export { DEFAULT_INSTANT_APP_ID, INSTANT_EXPIRES_ISO }
 export const DEFAULT_ROOM = 'VERDAO'
 
 export const APP_ID =
@@ -78,8 +81,12 @@ export function isInstantExpiringSoon(withinDays = 5) {
 
 export function isInstantExpired() {
   try {
-    return Date.now() > new Date(INSTANT_EXPIRES_ISO).getTime()
+    return isInstantExpiredAt(Date.now(), APP_ID)
   } catch {
     return false
   }
+}
+
+export function syncIsLive() {
+  return !isInstantExpired()
 }
