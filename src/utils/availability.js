@@ -65,17 +65,21 @@ export function fromRoster(squad = []) {
   return { injuries, suspended }
 }
 
-/**
- * Manchetes que citam desfalque/lesão/suspensão (sinal fraco — rotulado como notícia).
- * @param {object[]} news
- */
+/** Desfalque só entra se a palavra está no título e o título é do Palmeiras. */
+export function isPalmeirasSquadNews(title) {
+  const t = String(title || '')
+  if (!/palmeiras/i.test(t)) return false
+  if (/ex-palmeiras/i.test(t)) return false
+  if (/suspens[aã]o de contrato/i.test(t)) return false
+  return NEWS_RE.test(t)
+}
+
 export function fromNews(news = []) {
   const hits = []
   const seen = new Set()
   for (const n of news || []) {
     const title = n.title || ''
-    const blurb = n.description || n.summary || ''
-    if (!NEWS_RE.test(title) && !NEWS_RE.test(blurb)) continue
+    if (!isPalmeirasSquadNews(title)) continue
     const key = title.slice(0, 80)
     if (seen.has(key)) continue
     seen.add(key)
